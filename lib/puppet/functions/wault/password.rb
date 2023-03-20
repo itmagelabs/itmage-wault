@@ -63,7 +63,7 @@ module Wault
     end
 
     def get_value
-      cache_key = [@name, @address]
+      cache_key = [@name, @address, @namespace]
       last_result = @cache_hash[cache_key]
       return last_result unless last_result.nil?
       value = Vault.logical.read(path)
@@ -114,7 +114,7 @@ module Wault
     end
 
     def gen_facts
-      facts.sort.map { |fact| "#{fact}__#{facter(fact)}" }
+      facts.sort.map { |f| "#{f}__#{facter(f)}" }
     end
 
     def real_expire
