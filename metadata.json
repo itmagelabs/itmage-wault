@@ -1,6 +1,6 @@
 {
   "name": "itmage-wault",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "itmage",
   "summary": "Secret retrieval and put for Vault",
   "license": "Apache-2.0",
