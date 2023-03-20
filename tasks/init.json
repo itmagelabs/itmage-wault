@@ -1,0 +1,7 @@
+{
+  "puppet_task_version": 1,
+  "supports_noop": false,
+  "description": "Unseal new vault and enable secret engine",
+  "parameters": {
+  }
+}
