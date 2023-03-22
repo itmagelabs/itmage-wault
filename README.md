@@ -8,7 +8,7 @@
 
 For Puppet 6+ users wanting to use secrets from
 [Hashicorp Vault](https://www.vaultproject.io/) on their Puppet agents, this
-Puppet module provides the `wault::password()` function.
+Puppet module provides the `wault::data()` function.
 
 When used with Puppet 6's [`Deferred`
 type](https://puppet.com/docs/puppet/7/deferring_functions.html), the function
@@ -22,7 +22,7 @@ This modules assumes the following:
 1. Puppet 6+
 2. An existing [Vault](https://www.vaultproject.io/) infrastructure
 
-The `wault::password()` function is expected to be run with the `Deferred`
+The `wault::data()` function is expected to be run with the `Deferred`
 type; as such, Puppet 6 or later is required.
 
 And as this function is meant to read secrets from Vault, an existing Vault
@@ -34,12 +34,12 @@ infrastructure is assumed to be up and reachable by your Puppet agents.
 Install this module as you would in any other; the necessary code will
 be distributed to Puppet agents via pluginsync.
 
-In your manifests, call the `wault::password()` function using the
+In your manifests, call the `wault::data()` function using the
 Deferred type. For example:
 
 ```puppet
 file { '/tmp/password1':
-  content => Deferred('wault::password',
+  content => Deferred('wault::data',
     [
       'password1', { 'facts' => ['kernel'] }
     ]
@@ -47,7 +47,7 @@ file { '/tmp/password1':
 }
 
 file { '/tmp/password2':
-  content => Deferred('wault::password',
+  content => Deferred('wault::data',
     [
       'password2', {
         'facts'  => ['kernel', 'is_virtual'],
@@ -60,7 +60,7 @@ file { '/tmp/password2':
 
 ### Configuring the Wault password
 
-The lookup done by `wault::password()` can be configured in two ways:
+The lookup done by `wault::data()` can be configured in two ways:
 a hash of options, configuration file.
 
 In all cases, the path to the secret is the first positional argument and is
@@ -70,7 +70,7 @@ below are optional.
 #### Options Hash
 
 ```
-wault::password( <name>, [<options_hash>] )
+wault::data( <name>, [<options_hash>] )
 ```
 
 
@@ -79,7 +79,7 @@ wault::password( <name>, [<options_hash>] )
 Here are some examples of each method:
 ```puppet
 # Running a function on a agent node
-$out = Deferred('wault::password',
+$out = Deferred('wault::data',
   [ 'example', {
       'facts'  => ['kernel', 'is_virtual'],
       'expire' => '1 week'
@@ -87,7 +87,7 @@ $out = Deferred('wault::password',
 )
 
 #  If you need to put a value in a string
-$out = Deferred('wault::password',[
+$out = Deferred('wault::data',[
     'my_parameter_in_vault', {'facts' => ['kernel']}
 ])
 file { '/etc/config.env':
@@ -96,8 +96,8 @@ file { '/etc/config.env':
 }
 
 # Running a function on a server node
-$password = wault::password('example')
-$other_password = wault::password('other',
+$password = wault::data('example')
+$other_password = wault::data('other',
   {
     'facts'  => ['kernel', 'is_virtual'],
     'expire' => '1 week'

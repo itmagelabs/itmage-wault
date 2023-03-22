@@ -5,7 +5,7 @@ module Wault
   require 'vault'
 
   # TODO
-  class Password
+  class Data
     attr_accessor :name
 
     def initialize(cache, name, params, scope)
@@ -17,10 +17,11 @@ module Wault
       @default_fact = '__common' # kv/__common/<name>
 
       # Параметры для настройки Wault
-      @config_dir   = params.fetch('config_dir', '/opt/wault')
-      @config_file  = params.fetch('config_file', "#{@config_dir}/.vault.yaml")
-      @address      = params.fetch('address', yaml['address'])
-      @namespace    = params.fetch('namespace', nil)
+      @config_dir  = params['config_dir'] || '/opt/wault'
+      @config_file = params['config_file'] || "#{@config_dir}/.vault.yaml"
+      @address     = params['address'] || yaml['address']
+      @path        = params['path'] || nil
+      @namespace   = params['namespace'] || nil
 
       # Параметры для внутреннего использования
       @stale = {}
@@ -30,7 +31,9 @@ module Wault
     end
 
     def path
-      "kv/#{real_facts}/#{name}"
+      return "kv/#{real_facts}/#{name}" if @path.nil?
+
+      @path
     end
 
     def staled
@@ -129,7 +132,7 @@ module Wault
   end
 end
 
-Puppet::Functions.create_function(:'wault::password', Puppet::Functions::InternalFunction) do
+Puppet::Functions.create_function(:'wault::data', Puppet::Functions::InternalFunction) do
   dispatch :run do
     cache_param
     required_param 'String', :name
@@ -137,7 +140,7 @@ Puppet::Functions.create_function(:'wault::password', Puppet::Functions::Interna
   end
 
   def run(cache, name, params = {})
-    pass = Wault::Password.new(cache, name, params, closure_scope)
+    pass = Wault::Data.new(cache, name, params, closure_scope)
     pass.sync
   end
 end
