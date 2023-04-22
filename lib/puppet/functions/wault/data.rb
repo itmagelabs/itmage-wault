@@ -46,14 +46,18 @@ module Wault
     end
 
     def sync
-      return @stale[:password] unless need_replace?
+      return censure(@stale[:password]) unless need_replace?
 
       Vault.with_retries(Vault::HTTPConnectionError) do
         Vault.logical.write(path, value: value,
                             expire: real_expire ? Time.now.to_i + real_expire : real_expire,
                             expire_duration: expire, ttl: real_expire)
-        value
+        censure(value)
       end
+    end
+
+    def censure(input)
+      Puppet::Pops::Types::PSensitiveType::Sensitive.new(input)
     end
 
     def need_replace?
