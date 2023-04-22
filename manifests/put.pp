@@ -14,9 +14,6 @@ define wault::put (
       value => $value
     }]
   )
-  notify{"Requested new password for ${path}":
-    message => $data.unwrap
-  }
   file { "/root/.wault.${md5($path)}.lock":
       content => Deferred('sprintf',['CENSORED', $data])
   }
