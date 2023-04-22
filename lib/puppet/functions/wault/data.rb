@@ -73,7 +73,7 @@ module Wault
       return nil unless value
 
       data = value.data
-      censured_data = Puppet::Pops::Types::PSensitiveType::Sensitive.new(data)
+      censured_data = data
       @cache_hash[cache_key] = censured_data
 
       censured_data
@@ -91,7 +91,8 @@ module Wault
     end
 
     def value
-      @params['value'] = Puppet::Pops::Types::PSensitiveType::Sensitive.new(generate) unless @params.key? 'value'
+      # Puppet::Pops::Types::PSensitiveType::Sensitive.new
+      @params['value'] = generate unless @params.key? 'value'
 
       @params.fetch('value')
     end

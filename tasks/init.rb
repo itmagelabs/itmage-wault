@@ -92,5 +92,5 @@ end
 
 vault = HashicoprObj.new
 vault.unseal
-vault.create_kv(version=2)
+vault.create_kv
 vault.node_config
