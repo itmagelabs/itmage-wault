@@ -22,6 +22,7 @@ module Wault
       @address     = params['address'] || yaml['address']
       @path        = params['path'] || nil
       @namespace   = params['namespace'] || nil
+      @force       = params['force'] || false
 
       # Параметры для внутреннего использования
       @stale = {}
@@ -72,7 +73,7 @@ module Wault
     def get_value
       cache_key = [@name, @address, @namespace]
       last_result = @cache_hash[cache_key]
-      return last_result unless last_result.nil?
+      return last_result unless (last_result.nil? or @force)
       value = Vault.logical.read(path)
       return nil unless value
 
