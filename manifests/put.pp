@@ -5,14 +5,15 @@
 # @example
 #   wault::put { 'namevar': }
 define wault::put (
-  $value,
+  Optional $value = undef,
   $path = $name,
 ) {
+  $defaults = {path => $path}
+  if $value {
+    $params = {value => $value}
+  } else { $params = {} }
   $data = Deferred('wault::data',
-    [$name, {
-      path  => $path,
-      value => $value
-    }]
+    [$name, merge($params, $defaults)]
   )
   file { "/root/.wault.${md5($path)}.lock":
       content => Deferred('sprintf',['CENSORED', $data])
