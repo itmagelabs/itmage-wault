@@ -19,10 +19,13 @@ module Wault
       # Параметры для настройки Wault
       @config_dir  = params['config_dir'] || '/opt/wault'
       @config_file = params['config_file'] || "#{@config_dir}/.vault.yaml"
-      @address     = params['address'] || yaml['address']
       @path        = params['path'] || nil
       @namespace   = params['namespace'] || nil
       @force       = params['force'] || false
+      @address     = params['address'] || yaml['address']
+      @token       = params['token'] || yaml['token']
+      @ssl_verify  = params['ssl_verify'] || yaml.fetch('ssl_verify', false)
+      @timeout     = params['timeout'] || yaml.fetch('timeout', 30)
 
       # Параметры для внутреннего использования
       @stale = {}

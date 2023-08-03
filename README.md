@@ -1,8 +1,7 @@
 #### Table of Contents
 
 1. [Description](#description)
-2. [Requirements](#setup)
-3. [Usage, Configuration, and Examples](#usage)
+2. [Examples](#examples)
 
 ## Description
 
@@ -16,47 +15,7 @@ allows agents to retrieve or put secrets for Vault when a catalog is applied rat
 than compiled. In this way, the secret data is not embedded in the catalog and
 the Puppetserver does not need permissions to read all your Vault secrets.
 
-## Requirements
-
-This modules assumes the following:
-1. Puppet 6+
-2. An existing [Vault](https://www.vaultproject.io/) infrastructure
-
-The `wault::data()` function is expected to be run with the `Deferred`
-type; as such, Puppet 6 or later is required.
-
-And as this function is meant to read secrets from Vault, an existing Vault
-infrastructure is assumed to be up and reachable by your Puppet agents.
-
-
-## Usage
-
-Install this module as you would in any other; the necessary code will
-be distributed to Puppet agents via pluginsync.
-
-In your manifests, call the `wault::data()` function using the
-Deferred type. For example:
-
-```puppet
-file { '/tmp/password1':
-  content => Deferred('wault::data',
-    [
-      'password1', { 'facts' => ['kernel'] }
-    ]
-  ),
-}
-
-file { '/tmp/password2':
-  content => Deferred('wault::data',
-    [
-      'password2', {
-        'facts'  => ['kernel', 'is_virtual'],
-        'expire' => '1 week'
-      }
-    ]
-  ),
-}
-```
+## Examples
 
 ### Configuring the Wault password
 
@@ -70,13 +29,25 @@ below are optional.
 #### Options Hash
 
 ```
-wault::data( <name>, [<options_hash>] )
+wault::data( <name>, [<OPTIONS HASH>>] )
 ```
 
+An options hash can have the following keys:
 
-### Usage Examples
+Option|Default|Description
+:------|:-------:|:-----------
+facts |'__common'|
+expire |''|
+path       |nil|
+namespace  |nil|
+config_dir |'/opt/wault'|
+config_file|'/opt/wault/.vault.yaml'|
+address    |'http://127.0.0.1:8200'|
+token      |<secret>|
+ssl_verify |false|
+timeout    |30|
+force      |false|
 
-Here are some examples of each method:
 ```puppet
 # Running a function on a agent node
 $out = Deferred('wault::data',
